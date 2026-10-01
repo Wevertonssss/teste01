@@ -25,6 +25,17 @@ jobs:
       - name: Inspecionar o codigo Python (SAST)
         run: bandit -r app.py
       # --- FIM DA ANALISE SAST ---
+      
+      # --- INICIO DA ANALISE DE INFRAESTRUTURA (TERRAFORM) ---
+      - name: Configurar o Terraform na esteira
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Inicializar Terraform (Modo Local/Sem Nuvem)
+        run: terraform init -backend=false
+
+      - name: Validar a sintaxe e logica do main.tf
+        run: terraform validate
+      # --- FIM DA ANALISE DE INFRAESTRUTURA ---
 
       # Passo B: Monta a caixa
       - name: Constroi a caixa do Docker
