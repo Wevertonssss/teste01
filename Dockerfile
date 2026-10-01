@@ -1,5 +1,5 @@
 # 1. Pega um computador pequenininho e limpo na internet
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 # 2. Cria uma pasta chamada /app lá dentro
 WORKDIR /app
