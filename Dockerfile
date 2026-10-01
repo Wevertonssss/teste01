@@ -1,24 +1,22 @@
-# --- ESTÁGIO 1: O Construtor (Faz o trabalho sujo) ---
-FROM python:3.12-slim as builder
+# --- ESTÁGIO 1: O Construtor (Alpine) ---
+FROM python:3.12-alpine as builder
 WORKDIR /app
 COPY requirements.txt .
-# Instala as dependências numa pasta isolada
 RUN pip install --user --no-cache-dir -r requirements.txt
 
-# --- ESTÁGIO 2: O Servidor Seguro (Limpo e Leve) ---
-FROM python:3.12-slim
+# --- ESTÁGIO 2: O Servidor Seguro e Minimalista ---
+FROM python:3.12-alpine
 WORKDIR /app
 
-# Copia apenas as dependências limpas do estágio 1
+# Copia apenas as dependências do estágio 1
 COPY --from=builder /root/.local /home/appuser/.local
-# Copia o código da sua aplicação
+# Copia o código da aplicação
 COPY . .
 
-# HARDENING: Criar um utilizador sem privilégios de administrador
-RUN useradd -m appuser && chown -R appuser /app
+# HARDENING: Criar utilizador no Alpine
+RUN adduser -D appuser && chown -R appuser /app
 USER appuser
 
-# Garante que o sistema encontra os pacotes instalados
 ENV PATH=/home/appuser/.local/bin:$PATH
 
 EXPOSE 5000
