@@ -25,7 +25,7 @@ jobs:
       - name: Inspecionar o codigo Python (SAST)
         run: bandit -r app.py
       # --- FIM DA ANALISE SAST ---
-      
+
       # --- INICIO DA ANALISE DE INFRAESTRUTURA (TERRAFORM) ---
       - name: Configurar o Terraform na esteira
         uses: hashicorp/setup-terraform@v2
@@ -47,7 +47,7 @@ jobs:
         with:
           image-ref: 'minha-aplicacao:latest'
           format: 'table'
-          exit-code: '0'
+          exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'

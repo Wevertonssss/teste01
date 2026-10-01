@@ -1,15 +1,25 @@
-# 1. Usando o Alpine: um Linux ultra leve e focado em seguranca
-FROM python:3.12-alpine
+# --- ESTÁGIO 1: O Construtor (Faz o trabalho sujo) ---
+FROM python:3.12-slim as builder
+WORKDIR /app
+COPY requirements.txt .
+# Instala as dependências numa pasta isolada
+RUN pip install --user --no-cache-dir -r requirements.txt
 
+# --- ESTÁGIO 2: O Servidor Seguro (Limpo e Leve) ---
+FROM python:3.12-slim
 WORKDIR /app
 
-COPY requirements.txt .
+# Copia apenas as dependências limpas do estágio 1
+COPY --from=builder /root/.local /home/appuser/.local
+# Copia o código da sua aplicação
+COPY . .
 
-# 2. Instalacao simples, pois o Alpine nao tem dependencias antigas para criar conflito
-RUN pip install --no-cache-dir -r requirements.txt
+# HARDENING: Criar um utilizador sem privilégios de administrador
+RUN useradd -m appuser && chown -R appuser /app
+USER appuser
 
-COPY app.py .
+# Garante que o sistema encontra os pacotes instalados
+ENV PATH=/home/appuser/.local/bin:$PATH
 
 EXPOSE 5000
-
 CMD ["python", "app.py"]
