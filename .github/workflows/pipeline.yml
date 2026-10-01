@@ -8,6 +8,24 @@ jobs:
   inspecionar:
     runs-on: ubuntu-latest
 
+    name: O Robo Inspetor (DevSecOps)
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  security-events: write # Permite enviar o painel SARIF para o Dashboard
+  actions: read          # Permite ler dados da esteira
+  contents: read         # Permite ler o código do repositório
+
+jobs:
+  inspecionar:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # ... o resto dos seus passos continua igual ...
+
     steps:
       # Passo A: Pega a caixa
       - name: Pega o codigo
