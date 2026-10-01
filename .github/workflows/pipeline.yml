@@ -11,8 +11,25 @@ jobs:
 
     steps:
     # Passo A: Pega a caixa
-    - name: Pega o código
-      uses: actions/checkout@v4
+      - name: Pega o código
+        uses: actions/checkout@v3  # (ou a versão que estiver no seu ficheiro)
+
+      # --- INÍCIO DO BLOCO NOVO QUE VOCÊ VAI ADICIONAR ---
+      - name: Configurar Python na esteira
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Instalar o inspetor de código (Bandit)
+        run: pip install bandit
+
+      - name: Inspecionar o código Python (SAST)
+        run: bandit -r app.py
+      # --- FIM DO BLOCO NOVO ---
+
+      # --- O SEU CÓDIGO ANTIGO CONTINUA INTACTO AQUI PARA BAIXO ---
+      - name: Ligar o Inspetor Trivy
+        # ... (restante da sua configuração do Trivy, Docker, exit-code 0, etc)
 
     # Passo B: Monta a caixa
     - name: Constrói a caixa do Docker
