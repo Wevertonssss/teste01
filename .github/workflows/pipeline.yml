@@ -41,31 +41,20 @@ jobs:
       - name: Constroi a caixa do Docker
         run: docker build -t minha-aplicacao:latest .
 
-      # Passo C: O robo inspetor de seguranca gera multiplos formatos de relatorio
-      - name: Ligar o Inspetor Trivy (Formato Tabela nos Logs)
+      # Passo C: O robo inspetor de seguranca gera um painel visual SARIF
+      - name: Ligar o Inspetor Trivy (Modo SARIF)
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'minha-aplicacao:latest'
-          format: 'table'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
-      - name: Gerar Relatorio JSON Estruturado
-        uses: aquasecurity/trivy-action@master
-        if: always() # Garante que gera mesmo se a esteira falhar
-        with:
-          image-ref: 'minha-aplicacao:latest'
-          format: 'json'
-          output: 'trivy-report.json'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-
-      - name: Guardar Relatorio Tecnico (Artifact JSON)
-        uses: actions/upload-artifact@v4
+      - name: Enviar relatorio para o Dashboard Grafico do GitHub
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
-          name: relatorio-seguranca-completo
-          path: trivy-report.json
+          sarif_file: 'trivy-results.sarif'
