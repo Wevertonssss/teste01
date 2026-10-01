@@ -4,27 +4,14 @@ on:
   push:
     branches: [ "main" ]
 
-jobs:
-  inspecionar:
-    runs-on: ubuntu-latest
-
-    name: O Robo Inspetor (DevSecOps)
-
-on:
-  push:
-    branches: [ "main" ]
-
 permissions:
-  security-events: write # Permite enviar o painel SARIF para o Dashboard
-  actions: read          # Permite ler dados da esteira
-  contents: read         # Permite ler o código do repositório
+  security-events: write
+  actions: read
+  contents: read
 
 jobs:
   inspecionar:
     runs-on: ubuntu-latest
-    
-    steps:
-      # ... o resto dos seus passos continua igual ...
 
     steps:
       # Passo A: Pega a caixa
@@ -59,7 +46,7 @@ jobs:
       - name: Constroi a caixa do Docker
         run: docker build -t minha-aplicacao:latest .
 
-      # Passo C: O robo inspetor de seguranca gera um painel visual SARIF
+      # Passo C: O robo inspetor de seguranca gera o painel visual SARIF
       - name: Ligar o Inspetor Trivy (Modo SARIF)
         uses: aquasecurity/trivy-action@master
         with:
